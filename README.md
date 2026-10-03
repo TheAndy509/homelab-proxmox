@@ -1,6 +1,6 @@
 # Homelab Proxmox
 
-Servidor casero sobre **Proxmox VE** en un mini PC Lenovo ThinkCentre: nube personal (Nextcloud), y más adelante servidor de Minecraft y laboratorio de máquinas virtuales para ciberseguridad.
+Servidor casero sobre **Proxmox VE** en un mini PC Lenovo ThinkCentre: nube personal (Nextcloud), y más adelante laboratorio de máquinas virtuales para ciberseguridad.
 
 Proyecto personal para aprender virtualización, almacenamiento, backups y endurecimiento de servicios, documentado paso a paso.
 
