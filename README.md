@@ -34,7 +34,7 @@ ThinkCentre (Proxmox VE 9.2)
 | 2 | [Almacenamiento: HDD de datos](docs/02-almacenamiento.md) | ✅ |
 | 3 | [Nextcloud en contenedor LXC](docs/03-nextcloud.md) | ✅ |
 | 4 | [Backups programados](docs/04-backups.md) | ✅ |
-| 5 | Endurecimiento de Nextcloud (avisos de seguridad) | ⏳ |
+| 5 | [Endurecimiento de Nextcloud](docs/05-endurecimiento-nextcloud.md) | ✅ |
 | 6 | Acceso remoto seguro (Tailscale, sin abrir puertos) | ⏳ |
 | 7 | Minecraft (requiere más RAM) | ⏳ |
 | 8 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |

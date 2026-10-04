@@ -9,3 +9,9 @@
 | `chown` falla en `lost+found` | Carpeta del host en un CT unprivileged | Ignorarlo, no afecta |
 | `^[[200~` al pegar comandos | Bracketed paste en la consola noVNC | Pegar línea por línea |
 | TurnKey pide reiniciar por el kernel | Un LXC no tiene kernel propio | *Skip*; el kernel lo actualiza el host |
+| `sudo: command not found` en el CT | TurnKey no instala `sudo` | Como root: `runuser -u www-data -- php occ …` |
+| Nextcloud 29 sin parches de seguridad | La plantilla TurnKey trae una versión vieja | Updater oficial, una versión mayor cada vez |
+| Falla la integridad en `layout.guest.php` | TurnKey añade su pie de página al login | Comparar con el original (`diff`); el updater lo restaura |
+| `app:update` no actualiza nada | Se lanzó con el modo mantenimiento activo | Desactivar el mantenimiento y repetir |
+| Avisos falsos en `occ setupchecks` | Desde la terminal no hay petición web | La lista que vale es la de Administración → Vista general |
+| El log seguía en la carpeta de datos antigua | TurnKey fija `logfile` en `config.php` | Mover el log a `/var/log/nextcloud` y cambiar `logfile` |
