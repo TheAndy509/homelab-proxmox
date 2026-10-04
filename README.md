@@ -36,8 +36,8 @@ ThinkCentre (Proxmox VE 9.2)
 | 4 | [Backups programados](docs/04-backups.md) | ✅ |
 | 5 | [Endurecimiento de Nextcloud](docs/05-endurecimiento-nextcloud.md) | ✅ |
 | 6 | Acceso remoto seguro (Tailscale, sin abrir puertos) | ⏳ |
-| 7 | Minecraft (requiere más RAM) | ⏳ |
-| 8 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
+| 7 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
+| 8 | Minecraft (migrar el servidor existente; requiere más RAM) | ⏳ |
 
 Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
 
