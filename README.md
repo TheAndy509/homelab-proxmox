@@ -41,6 +41,33 @@ ThinkCentre (Proxmox VE 9.2)
 
 Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
 
+## Pendientes
+
+En orden de prioridad.
+
+**Fase 6 — Acceso remoto (Tailscale)**
+- [ ] Instalar Tailscale en el host Proxmox como *subnet router* que anuncie `192.168.1.0/24`.
+- [ ] Añadir la IP / nombre MagicDNS de Tailscale a `trusted_domains` de Nextcloud.
+- [ ] Clientes: app Tailscale + app Nextcloud en móvil y portátil.
+- [ ] Revisar *key expiry* de los dispositivos.
+- Decisión: sin abrir puertos ni exponer Nextcloud a Internet. Compartir con gente sin Tailscale (Funnel / Cloudflare Tunnel) solo si algún día hace falta.
+
+**Endurecimiento del host**
+- [ ] SSH solo con llave; desactivar login de root por contraseña.
+- [ ] Firewall de Proxmox: política DROP de entrada; 8006 y 22 solo desde LAN y Tailscale; CT 100 solo 80/443. Crear las reglas de permitir **antes** de activarlo, con teclado y pantalla conectados al servidor.
+- [ ] 2FA en la web de Proxmox + usuario administrador distinto de `root@pam`.
+- [ ] fail2ban para la web de Proxmox y el login de Nextcloud.
+- [ ] `unattended-upgrades` en el CT 100 (parches de seguridad automáticos).
+
+**Fiabilidad y avisos**
+- [ ] Monitoreo SMART del HDD (datos y backups están en el mismo disco).
+- [ ] Correo SMTP para recibir avisos de backups, SMART y Nextcloud.
+- [ ] Copia externa de los archivos (regla 3-2-1) y disco `backup1` dedicado.
+
+**Limpieza y deuda**
+- [ ] Borrar `/root/nextcloud-data.old` del CT 100.
+- [ ] PHP 8.2 → migrar a TurnKey/Debian 13 antes de Nextcloud 35.
+
 ## Seguridad de esta documentación
 
 - No se publican contraseñas, tokens, claves ni nombres de usuario.
