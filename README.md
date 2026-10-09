@@ -35,7 +35,7 @@ ThinkCentre (Proxmox VE 9.2)
 | 3 | [Nextcloud en contenedor LXC](docs/03-nextcloud.md) | ✅ |
 | 4 | [Backups programados](docs/04-backups.md) | ✅ |
 | 5 | [Endurecimiento de Nextcloud](docs/05-endurecimiento-nextcloud.md) | ✅ |
-| 6 | Acceso remoto seguro (Tailscale, sin abrir puertos) | ⏳ |
+| 6 | [Acceso remoto seguro (Tailscale, sin abrir puertos)](docs/06-tailscale.md) | ✅ |
 | 7 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
 | 8 | Minecraft (migrar el servidor existente; requiere más RAM) | ⏳ |
 
@@ -44,13 +44,6 @@ Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
 ## Pendientes
 
 En orden de prioridad.
-
-**Fase 6 — Acceso remoto (Tailscale)**
-- [ ] Instalar Tailscale en el host Proxmox como *subnet router* que anuncie `192.168.1.0/24`.
-- [ ] Añadir la IP / nombre MagicDNS de Tailscale a `trusted_domains` de Nextcloud.
-- [ ] Clientes: app Tailscale + app Nextcloud en móvil y portátil.
-- [ ] Revisar *key expiry* de los dispositivos.
-- Decisión: sin abrir puertos ni exponer Nextcloud a Internet. Compartir con gente sin Tailscale (Funnel / Cloudflare Tunnel) solo si algún día hace falta.
 
 **Endurecimiento del host**
 - [ ] SSH solo con llave; desactivar login de root por contraseña.
