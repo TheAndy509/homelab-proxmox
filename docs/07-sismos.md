@@ -1,6 +1,6 @@
 # 7. Monitor de sismos de Panamá (CT 101)
 
-Objetivo: un contenedor pequeño que revise cada 5 minutos la página de sismos del [Instituto de Geociencias de la UP](https://sismosgeociencias.up.ac.pa/) y, por cada sismo nuevo, avise al celular (ntfy) y lo anuncie en voz alta por Alexa (Voice Monkey). También sirve un mapa web con los sismos del día.
+Objetivo: un contenedor pequeño que revise cada minuto la página de sismos del [Instituto de Geociencias de la UP](https://sismosgeociencias.up.ac.pa/) y, por cada sismo nuevo, avise al celular (ntfy) y lo anuncie en voz alta por Alexa (Voice Monkey). También sirve un mapa web con los sismos del día.
 
 Código: repo privado `TheAndy509/sismos-panama` (Python, solo biblioteca estándar).
 
@@ -23,7 +23,7 @@ pct start 101
 | Ajuste | Por qué |
 |---|---|
 | Debian 13 | Es la base de Proxmox 9 y trae Python 3.13 |
-| 512 MB de RAM | El script dura segundos cada 5 minutos; el servidor solo tiene 4 GB |
+| 512 MB de RAM | El script dura menos de un segundo cada minuto; el servidor solo tiene 4 GB |
 | Sin privilegios | Si alguien rompe el contenedor, no es root en el host |
 | IP fija `.51` | Junto a Nextcloud (`.50`); se comprobó antes con `ping` que estaba libre |
 | Solo llave SSH | Se creó sin contraseña de root; se entra con la llave de la PC o con `pct enter 101` |
@@ -49,7 +49,7 @@ VM_DEVICE=…
 Cron de root:
 
 ```
-*/5 * * * * set -a; . /etc/sismos.env; python3 /opt/sismos-panama/sismos.py >> /var/log/sismos.log 2>&1
+* * * * * flock -n /run/sismos.lock sh -c "set -a; . /etc/sismos.env; python3 /opt/sismos-panama/sismos.py" >> /var/log/sismos.log 2>&1
 ```
 
 Mapa web como servicio `sismos-web` (puerto 8080). Usa `DynamicUser=yes`, así que el servidor web corre con un usuario temporal sin privilegios y no como root:
