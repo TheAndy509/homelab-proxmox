@@ -19,7 +19,8 @@ Proyecto personal para aprender virtualización, almacenamiento, backups y endur
 ```
 ThinkCentre (Proxmox VE 9.2)
 ├── SSD  local / local-lvm
-│   └── CT 100 nextcloud (rootfs 16 GB)
+│   ├── CT 100 nextcloud (rootfs 16 GB)
+│   └── CT 101 sismos (rootfs 4 GB, monitor de sismos)
 └── HDD  hdd1 (Directory, ext4)
     ├── mp0 de CT 100 → /mnt/data (700 GB, archivos de Nextcloud)
     └── backups vzdump (semanales)
@@ -36,8 +37,9 @@ ThinkCentre (Proxmox VE 9.2)
 | 4 | [Backups programados](docs/04-backups.md) | ✅ |
 | 5 | [Endurecimiento de Nextcloud](docs/05-endurecimiento-nextcloud.md) | ✅ |
 | 6 | [Acceso remoto seguro (Tailscale, sin abrir puertos)](docs/06-tailscale.md) | ✅ |
-| 7 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
-| 8 | Minecraft (migrar el servidor existente; requiere más RAM) | ⏳ |
+| 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | 🔧 |
+| 8 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
+| 9 | Minecraft (migrar el servidor existente; requiere más RAM) | ⏳ |
 
 Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
 
@@ -46,7 +48,7 @@ Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
 En orden de prioridad.
 
 **Endurecimiento del host**
-- [ ] SSH solo con llave; desactivar login de root por contraseña.
+- [ ] SSH solo con llave: la llave de la PC ya está instalada en el host (2026-10-10); falta desactivar el login de root por contraseña.
 - [ ] Firewall de Proxmox: política DROP de entrada; 8006 y 22 solo desde LAN y Tailscale; CT 100 solo 80/443. Crear las reglas de permitir **antes** de activarlo, con teclado y pantalla conectados al servidor.
 - [ ] 2FA en la web de Proxmox + usuario administrador distinto de `root@pam`.
 - [ ] fail2ban para la web de Proxmox y el login de Nextcloud.

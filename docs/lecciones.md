@@ -15,3 +15,4 @@
 | `app:update` no actualiza nada | Se lanzó con el modo mantenimiento activo | Desactivar el mantenimiento y repetir |
 | Avisos falsos en `occ setupchecks` | Desde la terminal no hay petición web | La lista que vale es la de Administración → Vista general |
 | El log seguía en la carpeta de datos antigua | TurnKey fija `logfile` en `config.php` | Mover el log a `/var/log/nextcloud` y cambiar `logfile` |
+| `git clone` falla en el CT 101 pidiendo usuario | El repo del código es privado y el CT no tiene credenciales de GitHub | Copiar los archivos con `scp` desde la PC (no poner tokens de GitHub en el servidor) |
