@@ -61,6 +61,10 @@ Restart=always
 DynamicUser=yes
 ```
 
+## Carga sobre el sitio de la UP
+
+Revisar cada minuto no satura al servidor de Geociencias: el script descarga la página (~500 KB) solo cuando cambió, usando `ETag`. Si no hay cambios, el servidor responde `304` con 0 bytes.
+
 ## Acceso
 
 | Servicio | Dirección |
