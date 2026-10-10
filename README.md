@@ -37,7 +37,7 @@ ThinkCentre (Proxmox VE 9.2)
 | 4 | [Backups programados](docs/04-backups.md) | ✅ |
 | 5 | [Endurecimiento de Nextcloud](docs/05-endurecimiento-nextcloud.md) | ✅ |
 | 6 | [Acceso remoto seguro (Tailscale, sin abrir puertos)](docs/06-tailscale.md) | ✅ |
-| 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | 🔧 |
+| 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | ✅ |
 | 8 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
 | 9 | Minecraft (migrar el servidor existente; requiere más RAM) | ⏳ |
 

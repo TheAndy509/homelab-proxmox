@@ -73,4 +73,10 @@ Por Tailscale (fase 6) el mapa también se ve fuera de casa, porque el host ya a
 
 - `curl http://192.168.1.51:8080` → HTTP 200 ✅
 - Primera ejecución contra el sitio real: 200 sismos marcados como vistos ✅
-- Aviso al celular y a Alexa: pendiente de configurar los tokens.
+- Aviso de prueba por ntfy: HTTP 200 ✅
+- Aviso real (último sismo, M3.8 a 46 km al sur de Santiago) enviado al celular y a Alexa; Voice Monkey respondió `{"success":true}` ✅
+
+## Voice Monkey
+
+- Se usa la **v3** (`app.voicemonkey.io`, API `https://api-v3.voicemonkey.io/announce` con el parámetro `speech`). La consola vieja (`console.voicemonkey.io`) es v2 y ya no crea cuentas.
+- Skill vinculada en el marketplace **US**. Se creó un dispositivo tipo **Speaker** y, en la app de Alexa, una rutina: *Casa inteligente → Alexa Voice Monkey v3 → VM Speakers → sismos* → acción *Skills → Voice Monkey*, desde el Echo que habla.
