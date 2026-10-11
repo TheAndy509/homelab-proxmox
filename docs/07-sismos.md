@@ -1,6 +1,6 @@
 # 7. Monitor de sismos de Panamá (CT 101)
 
-Objetivo: un contenedor pequeño que revise cada minuto la página de sismos del [Instituto de Geociencias de la UP](https://sismosgeociencias.up.ac.pa/) y, por cada sismo nuevo, avise al celular (ntfy) y lo anuncie en voz alta por Alexa (Voice Monkey). También sirve un mapa web con los sismos del día.
+Objetivo: un contenedor pequeño que revise cada minuto la página de sismos del [Instituto de Geociencias de la UP](https://sismosgeociencias.up.ac.pa/) y, por cada sismo nuevo de magnitud 5 o más, avise al celular (ntfy) y lo anuncie en voz alta por Alexa (Voice Monkey). También sirve un mapa web con los sismos del día.
 
 Código: repo privado `TheAndy509/sismos-panama` (Python, solo biblioteca estándar).
 
@@ -61,6 +61,17 @@ Restart=always
 DynamicUser=yes
 ```
 
+## Solo avisos desde magnitud 5
+
+En Panamá hay muchos sismos pequeños al día, así que el celular y Alexa solo avisan desde **M 5.0** (constante `MIN_MAG` en `sismos.py`, cambio del 11 oct 2026). Los más pequeños siguen saliendo en el mapa. Si un sismo que ya se avisó se revisa a menos de 5 (p. ej. 5.1 → 4.8), también llega el aviso, para corregir el anterior.
+
+Para actualizar el contenedor (el repo es privado, así que se copia con `scp`):
+
+```sh
+scp sismos.py root@192.168.1.51:/opt/sismos-panama/
+ssh root@192.168.1.51 python3 /opt/sismos-panama/sismos.py --test   # ok
+```
+
 ## Carga sobre el sitio de la UP
 
 Revisar cada minuto no satura al servidor de Geociencias: el script descarga la página (~500 KB) solo cuando cambió, usando `ETag`. Si no hay cambios, el servidor responde `304` con 0 bytes.
@@ -79,6 +90,7 @@ Por Tailscale (fase 6) el mapa también se ve fuera de casa, porque el host ya a
 - Primera ejecución contra el sitio real: 200 sismos marcados como vistos ✅
 - Aviso de prueba por ntfy: HTTP 200 ✅
 - Aviso real (último sismo, M3.8 a 46 km al sur de Santiago) enviado al celular y a Alexa; Voice Monkey respondió `{"success":true}` ✅
+- Filtro de magnitud desplegado en el CT 101: `--test` → `ok` ✅
 
 ## Voice Monkey
 
