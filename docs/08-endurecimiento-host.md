@@ -30,3 +30,26 @@ sshd -t && systemctl reload ssh
 - Conexión nueva con llave → entra ✅
 - Conexión forzando contraseña → `Permission denied (publickey)` ✅
 - Web 8006 → HTTP 200 ✅
+
+## 2. Usuario administrador propio y 2FA
+
+Para el uso diario se creó un usuario en el realm **`pve`** (Proxmox VE authentication server), no en PAM:
+
+- Con `pve`, la contraseña la guarda Proxmox y el usuario **no existe en Linux**, así que no puede entrar al host por SSH.
+- Con PAM habría que crear antes el usuario con `adduser` y además podría entrar por SSH.
+
+Pasos:
+
+1. *Datacenter → Permissions → Users → Add*, realm *Proxmox VE authentication server*, con contraseña.
+2. *Datacenter → Permissions → Add → User Permission*: path `/`, rol `Administrator`, *Propagate* marcado. El botón *Permissions* de la lista de usuarios solo **muestra** permisos, no los asigna.
+3. 2FA **TOTP** (app de autenticación) para el usuario nuevo **y** para `root@pam`. `root@pam` se conserva como acceso de emergencia, no se borra.
+
+### Prueba
+
+- `pveum acl list` → `/`, `Administrator`, propagate 1 ✅
+- `pveum user tfa list` → TOTP en los dos usuarios ✅
+- Login del usuario nuevo con código TOTP → OK ✅
+
+### Si se pierde el celular
+
+Desde SSH con la llave (paso 1): `pveum user tfa delete <usuario>@<realm>` y se vuelve a configurar.

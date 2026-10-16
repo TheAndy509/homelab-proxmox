@@ -18,3 +18,9 @@
 | `git clone` falla en el CT 101 pidiendo usuario | El repo del código es privado y el CT no tiene credenciales de GitHub | Copiar los archivos con `scp` desde la PC (no poner tokens de GitHub en el servidor) |
 | Voice Monkey responde 403 `error code: 1010` | Cloudflare bloquea el User-Agent por defecto de Python (`Python-urllib`) | Enviar un User-Agent propio (el script usa `sismos-panama/1`) |
 | Alexa responde "no tengo claro cómo ayudarte con eso" en vez de leer el aviso | La rutina usa la acción personalizada `open Voice Monkey`, en inglés, y el Echo está en español | Cambiar la acción por *Skills → Voice Monkey* |
+
+## Login de Proxmox: "authentication failed" con el usuario nuevo
+
+**Qué pasó:** el usuario nuevo no podía entrar a la web aunque la contraseña era correcta.
+**Causa:** en la pantalla de login seguía elegido el realm *Linux PAM*. El log (`journalctl -u pvedaemon`) lo mostraba: `no such user ('…@pam')`, porque el usuario existe en el realm `pve`.
+**Lección:** en el login se elige el realm que corresponde al usuario. Ante un fallo de autenticación, revisar primero el log de `pvedaemon`, que dice exactamente qué usuario y realm se intentó.
