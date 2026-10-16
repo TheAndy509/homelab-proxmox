@@ -61,8 +61,8 @@ En orden de prioridad.
 - [ ] Copia externa de los archivos (regla 3-2-1) y disco `backup1` dedicado.
 
 **Limpieza y deuda**
-- [ ] Borrar `/root/nextcloud-data.old` del CT 100.
-- [ ] PHP 8.2 → migrar a TurnKey/Debian 13 antes de Nextcloud 35.
+- [x] Borrar `/root/nextcloud-data.old` del CT 100 (2026-10-15).
+- [x] PHP 8.2 → 8.4: el CT 100 ya corre PHP 8.4 y Nextcloud 35.0.1 (verificado 2026-10-15).
 
 ## Seguridad de esta documentación
 
