@@ -38,7 +38,7 @@ ThinkCentre (Proxmox VE 9.2)
 | 5 | [Endurecimiento de Nextcloud](docs/05-endurecimiento-nextcloud.md) | ✅ |
 | 6 | [Acceso remoto seguro (Tailscale, sin abrir puertos)](docs/06-tailscale.md) | ✅ |
 | 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | ✅ |
-| 8 | [Endurecimiento del host (SSH con llave, 2FA; firewall y fail2ban en curso)](docs/08-endurecimiento-host.md) | 🔄 |
+| 8 | [Endurecimiento del host (SSH con llave, 2FA, fail2ban; firewall en curso)](docs/08-endurecimiento-host.md) | 🔄 |
 | 9 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
 
 Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
@@ -51,7 +51,7 @@ En orden de prioridad.
 - [x] SSH solo con llave (2026-10-15, [fase 8](docs/08-endurecimiento-host.md)).
 - [ ] Firewall de Proxmox: política DROP de entrada; 8006 y 22 solo desde LAN y Tailscale; CT 100 solo 80/443. Crear las reglas de permitir **antes** de activarlo, con teclado y pantalla conectados al servidor.
 - [x] 2FA en la web de Proxmox + usuario administrador distinto de `root@pam` (2026-10-15).
-- [ ] fail2ban para la web de Proxmox y el login de Nextcloud.
+- [x] fail2ban para la web de Proxmox y el login de Nextcloud (2026-10-16, [fase 8](docs/08-endurecimiento-host.md)).
 - [ ] `unattended-upgrades` en el CT 100 (parches de seguridad automáticos).
 
 **Fiabilidad y avisos**
