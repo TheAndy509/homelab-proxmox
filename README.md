@@ -40,7 +40,6 @@ ThinkCentre (Proxmox VE 9.2)
 | 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | ✅ |
 | 8 | [Endurecimiento del host (SSH con llave, 2FA; firewall y fail2ban en curso)](docs/08-endurecimiento-host.md) | 🔄 |
 | 9 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
-| 10 | Minecraft (migrar el servidor existente; requiere más RAM) | ⏳ |
 
 Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
 
