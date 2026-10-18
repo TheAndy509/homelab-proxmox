@@ -10,7 +10,7 @@ Proyecto personal para aprender virtualización, almacenamiento, backups y endur
 |---|---|
 | Equipo | Lenovo ThinkCentre Tiny |
 | CPU | Intel Core i5 (9ª gen) |
-| RAM | 4 GB (temporal, ampliación prevista) |
+| RAM | 32 GB DDR4-2666 (2×16 GB, dual channel) |
 | Disco sistema | SSD 256 GB — Proxmox + discos de sistema de VMs/CTs |
 | Disco datos | HDD 1 TB — archivos de Nextcloud + backups |
 
