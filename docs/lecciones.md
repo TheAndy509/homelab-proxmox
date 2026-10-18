@@ -21,6 +21,7 @@
 | fail2ban del CT 100 no arrancaba (`Have not found any log file for nextcloud jail`) | Se movió el log de Nextcloud y el jail de TurnKey seguía apuntando a la ruta vieja | Corregir `logpath`; al mover un log, buscar quién más lo lee (`grep -r` en `/etc`) |
 | fail2ban no veía los logins fallidos de Nextcloud | Con `loglevel` 3 solo se anotan errores, y un login fallido es *warning* | `loglevel` 2 |
 | `fail2ban-client status` justo tras `restart` da `Failed to access socket path` | El servicio todavía estaba arrancando | Esperar un par de segundos y repetir |
+| Se iba a instalar `unattended-upgrades` en el CT 100 | TurnKey ya trae `cron-apt` instalando los parches de seguridad cada noche | Antes de instalar una herramienta, revisar qué trae ya la plantilla (`ls /etc/cron.d`, `/etc/apt/apt.conf.d`) |
 
 ## Login de Proxmox: "authentication failed" con el usuario nuevo
 

@@ -185,3 +185,33 @@ smartd -q showtests           # próximos tests programados
 ```
 
 Los "Aborted by host" antiguos del historial del HDD son de su uso anterior, cuando el equipo se apagaba en medio del test. No indican un fallo.
+
+## 5. Actualizaciones de seguridad automáticas del CT 100
+
+El plan era instalar `unattended-upgrades`, pero al revisar el CT resultó que **TurnKey ya trae `cron-apt`** haciendo ese trabajo. Instalar los dos sería tener dos programas actualizando el mismo sistema, así que se dejó `cron-apt`.
+
+Cómo está configurado (de fábrica en TurnKey):
+
+| Archivo | Qué hace |
+|---|---|
+| `/etc/cron.d/cron-apt` | Corre todos los días a las 00:00, con una espera aleatoria (hasta ~1 h) para no saturar los repositorios |
+| `/etc/cron-apt/action.d/5-install` | `dist-upgrade -y` **solo** con `/etc/apt/sources.list.d/security.sources.list` (seguridad de Debian y TurnKey); conserva las configuraciones modificadas (`--force-confold`) |
+| `/var/log/cron-apt/log` | Registro de cada ejecución |
+
+El log confirmó que funcionaba: ya había instalado parches de `openssl`, `systemd` y otros.
+
+### Lo que cron-apt no cubre
+
+- **Actualizaciones normales de Debian** (*point releases*): había 121 pendientes, entre ellas `openssh-server` y `apache2`. Se aplicaron a mano, con un backup manual previo del CT (no admite snapshots, ver [fase 2](02-almacenamiento.md)):
+  ```sh
+  apt update && apt full-upgrade   # ante "configuration file modified": N (conservar la propia)
+  apt autoremove && reboot
+  ```
+- **PHP del repositorio sury** (`php.list`): no está en la lista de seguridad. Como Nextcloud solo se puede usar a través de Tailscale, se revisa a mano una vez al mes junto con lo anterior.
+
+### Prueba
+
+- `apt list --upgradable` → vacío ✅
+- `occ status` → Nextcloud 35.0.1, sin modo mantenimiento ✅
+- `systemctl --failed` → nada; fail2ban `nextcloud` activo ✅
+- `tail /var/log/cron-apt/log` → sigue corriendo cada noche ✅
