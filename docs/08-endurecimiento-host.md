@@ -127,3 +127,61 @@ grep -E "Ban|Unban" /var/log/fail2ban.log      # historial de bloqueos
 ```
 
 Si el bloqueado es uno mismo y no se puede entrar por SSH, el `unbanip` se ejecuta con teclado y pantalla en el servidor.
+
+## 4. Monitoreo SMART y avisos (ntfy + correo)
+
+El HDD de 1 TB guarda los archivos de Nextcloud **y** sus backups, y ya trae ~18 000 h de uso. Si muere, se pierde todo a la vez. SMART suele avisar semanas antes (sectores reasignados o pendientes que empiezan a subir), pero solo sirve si el aviso llega a alguien.
+
+Estado de partida: los dos discos en `PASSED`, 0 sectores reasignados o pendientes en el HDD, 16 % de vida usada en el NVMe. `smartd` ya viene activo en Proxmox, pero con la configuración por defecto **no programa autotests** y los avisos se quedaban en el buzón local de `root`.
+
+### Avisos: notificaciones de Proxmox
+
+Proxmox redirige el correo de `root` (`/root/.forward` → `proxmox-mail-forward`) a su sistema de notificaciones (Datacenter → Notifications). Así, los avisos de smartd, de los backups y de las actualizaciones pasan todos por el mismo sitio.
+
+| Destino | Tipo | Configuración |
+|---|---|---|
+| `ntfy` | Webhook | `POST https://ntfy.sh/{{ secrets.topic }}`, header `Title: {{ title }}`, cuerpo `{{ message }}` |
+| `gmail` | SMTP | `smtp.gmail.com`, TLS (465), con contraseña de aplicación de Google |
+
+El matcher `default-matcher` (atrapa todas las notificaciones) envía a los dos destinos.
+
+![Destinos y matcher de notificaciones](img/15-notificaciones.png)
+
+**Por qué el tema de ntfy va en *Secrets*:** en ntfy.sh cualquiera que sepa el nombre de un tema puede leerlo, así que el nombre funciona como una contraseña. Se generó al azar (`openssl rand -hex 12`) y como *secret* no se muestra en la interfaz ni en `notifications.cfg`.
+
+**Por qué una contraseña de aplicación:** Gmail no acepta la contraseña normal por SMTP. La de aplicación solo sirve para enviar correo y se puede revocar sin tocar la cuenta. Lo ideal es que envíe una cuenta dedicada al servidor, no la personal: si alguien compromete el servidor, solo podría usar esa cuenta.
+
+### Autotests: `/etc/smartd.conf`
+
+Se comentó la línea `DEVICESCAN` original y se puso esta:
+
+```
+DEVICESCAN -a -o on -S on -n standby,q -s (S/../.././02|L/../../6/03) -W 4,45,55 -m root -M exec /usr/share/smartmontools/smartd-runner
+```
+
+| Opción | Qué hace |
+|---|---|
+| `-a` | Vigila todos los atributos y la salud general |
+| `-s (S/../.././02\|L/../../6/03)` | Test corto todos los días a las 02:00; largo (lee el disco entero, ~3 h) los sábados a las 03:00, para no chocar con el backup del domingo a las 03:00 |
+| `-W 4,45,55` | Avisa si la temperatura sube 4 °C de golpe, la anota pasando de 45 °C y da alerta crítica a partir de 55 °C |
+| `-n standby,q` | No despierta el disco si está dormido |
+| `-m root -M exec …` | Envía el aviso a `root`, que llega a las notificaciones de Proxmox |
+
+Para probar los avisos se añadió `-M test` temporalmente: al reiniciar `smartd` envía un aviso de prueba por cada disco. Después se quitó, porque si no llega uno en cada arranque.
+
+### Prueba
+
+- Botón **Test** de cada destino → llega el aviso al celular (ntfy) y el correo a Gmail ✅
+- `-M test` → el journal muestra la cadena completa: `smartd-runner` → `proxmox-mail-forward` → `notified via target ntfy` ✅
+- `smartctl -t short /dev/sda` → `Completed without error` ✅
+- `smartd -q showtests` → próximos tests cortos diarios y largos los sábados ✅
+
+### Uso
+
+```sh
+smartctl -H -A /dev/sda       # salud y atributos (fijarse en 5, 197 y 198: deben seguir en 0)
+smartctl -l selftest /dev/sda # historial de autotests
+smartd -q showtests           # próximos tests programados
+```
+
+Los "Aborted by host" antiguos del historial del HDD son de su uso anterior, cuando el equipo se apagaba en medio del test. No indican un fallo.

@@ -38,7 +38,7 @@ ThinkCentre (Proxmox VE 9.2)
 | 5 | [Endurecimiento de Nextcloud](docs/05-endurecimiento-nextcloud.md) | ✅ |
 | 6 | [Acceso remoto seguro (Tailscale, sin abrir puertos)](docs/06-tailscale.md) | ✅ |
 | 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | ✅ |
-| 8 | [Endurecimiento del host (SSH con llave, 2FA, fail2ban; firewall en curso)](docs/08-endurecimiento-host.md) | 🔄 |
+| 8 | [Endurecimiento del host (SSH con llave, 2FA, fail2ban, SMART y avisos; firewall en curso)](docs/08-endurecimiento-host.md) | 🔄 |
 | 9 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
 
 Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
@@ -55,8 +55,10 @@ En orden de prioridad.
 - [ ] `unattended-upgrades` en el CT 100 (parches de seguridad automáticos).
 
 **Fiabilidad y avisos**
-- [ ] Monitoreo SMART del HDD (datos y backups están en el mismo disco).
-- [ ] Correo SMTP para recibir avisos de backups, SMART y Nextcloud.
+- [x] Monitoreo SMART con autotests (2026-10-18, [fase 8](docs/08-endurecimiento-host.md)).
+- [x] Avisos de Proxmox (backups, SMART) por ntfy y correo (2026-10-18).
+- [ ] Enviar el correo desde una cuenta dedicada al servidor, no la personal.
+- [ ] Correo SMTP en Nextcloud.
 - [ ] Copia externa de los archivos (regla 3-2-1) y disco `backup1` dedicado.
 
 **Limpieza y deuda**

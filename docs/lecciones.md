@@ -27,3 +27,9 @@
 **Qué pasó:** el usuario nuevo no podía entrar a la web aunque la contraseña era correcta.
 **Causa:** en la pantalla de login seguía elegido el realm *Linux PAM*. El log (`journalctl -u pvedaemon`) lo mostraba: `no such user ('…@pam')`, porque el usuario existe en el realm `pve`.
 **Lección:** en el login se elige el realm que corresponde al usuario. Ante un fallo de autenticación, revisar primero el log de `pvedaemon`, que dice exactamente qué usuario y realm se intentó.
+
+## Gmail: "No hemos podido verificar que eres tú" con la cuenta nueva
+
+**Qué pasó:** con la cuenta de Gmail recién creada para el servidor, Google no dejaba activar la verificación en 2 pasos y sin ella no se puede crear la contraseña de aplicación ("La opción de configuración que buscas no está disponible para tu cuenta").
+**Causa:** un filtro antifraude de Google. Una cuenta nueva que cambia su seguridad desde un navegador sin historial parece sospechosa.
+**Lección:** crear la cuenta de avisos con tiempo, hacer la configuración de seguridad desde un dispositivo donde ya tenga la sesión iniciada (el celular) y no reintentar seguido. Mientras tanto se envía desde otra cuenta y se cambia cuando Google la libere.
