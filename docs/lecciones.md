@@ -22,6 +22,10 @@
 | fail2ban no veía los logins fallidos de Nextcloud | Con `loglevel` 3 solo se anotan errores, y un login fallido es *warning* | `loglevel` 2 |
 | `fail2ban-client status` justo tras `restart` da `Failed to access socket path` | El servicio todavía estaba arrancando | Esperar un par de segundos y repetir |
 | Se iba a instalar `unattended-upgrades` en el CT 100 | TurnKey ya trae `cron-apt` instalando los parches de seguridad cada noche | Antes de instalar una herramienta, revisar qué trae ya la plantilla (`ls /etc/cron.d`, `/etc/apt/apt.conf.d`) |
+| La web de Proxmox da `ERR_CONNECTION_REFUSED` aunque el servidor responde al ping | fail2ban baneó la IP de la propia PC tras 3 logins fallidos | `fail2ban-client set proxmox unbanip <IP>` por SSH; con `findtime = 2d` los fallos se acumulan dos días |
+| `C:\vgt.exe`: *The file or directory is corrupted and unreadable* | `Invoke-WebRequest` dejó la descarga incompleta | Comprobar el tamaño con `(Get-Item archivo).Length` y bajarlo de nuevo con el navegador |
+| La guía de pasos usaba `windowsserver.empresa.local` | El equipo se llama `windowserver` (una sola "s") | Mirar el nombre real con `hostname` o el registro SRV en vez de escribirlo de memoria |
+| No se puede pegar en la consola noVNC de la VM Windows | Falta el agente de portapapeles en el invitado | Display → Clipboard: VNC + `virtio-win-guest-tools`, y apagar/encender la VM desde Proxmox |
 
 ## Login de Proxmox: "authentication failed" con el usuario nuevo
 

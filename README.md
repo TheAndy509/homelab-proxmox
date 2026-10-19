@@ -20,7 +20,8 @@ Proyecto personal para aprender virtualización, almacenamiento, backups y endur
 ThinkCentre (Proxmox VE 9.2)
 ├── SSD  local / local-lvm
 │   ├── CT 100 nextcloud (rootfs 16 GB)
-│   └── CT 101 sismos (rootfs 4 GB, monitor de sismos)
+│   ├── CT 101 sismos (rootfs 4 GB, monitor de sismos)
+│   └── VM 103 winserver (60 GB, Windows Server + Active Directory, laboratorio)
 └── HDD  hdd1 (Directory, ext4)
     ├── mp0 de CT 100 → /mnt/data (700 GB, archivos de Nextcloud)
     └── backups vzdump (semanales)
@@ -39,7 +40,7 @@ ThinkCentre (Proxmox VE 9.2)
 | 6 | [Acceso remoto seguro (Tailscale, sin abrir puertos)](docs/06-tailscale.md) | ✅ |
 | 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | ✅ |
 | 8 | [Endurecimiento del host (SSH con llave, 2FA, fail2ban, SMART y avisos, parches automáticos; firewall en curso)](docs/08-endurecimiento-host.md) | 🔄 |
-| 9 | Laboratorio de ciberseguridad (Windows Server, Kali…) | ⏳ |
+| 9 | [Laboratorio: Windows Server con Active Directory](docs/09-laboratorio-windows-server.md) (Kali pendiente) | 🔄 |
 
 Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
 
@@ -61,6 +62,11 @@ En orden de prioridad.
 - [ ] Enviar el correo desde una cuenta dedicada al servidor, no la personal.
 - [ ] Correo SMTP en Nextcloud.
 - [ ] Copia externa de los archivos (regla 3-2-1) y disco `backup1` dedicado.
+
+**Laboratorio (VM 103)**
+- [ ] RDP desde la PC con `xfreerdp3` falla (`LOGON_FAILURE`); desde la laptop sí entra.
+- [ ] Pasar disco y red a VirtIO + QEMU guest agent; desinstalar las Guest Additions de VirtualBox.
+- [ ] Borrar `/mnt/pve/hdd1/import/winserver.vdi`.
 
 **Limpieza y deuda**
 - [x] Borrar `/root/nextcloud-data.old` del CT 100 (2026-10-15).
