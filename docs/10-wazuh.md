@@ -87,7 +87,7 @@ Esto protege también a Nextcloud (`.50`), sismos (`.51`) y el Windows Server (`
 La llave de la laptop tenía una passphrase olvidada y no se puede recuperar, así que se generó una nueva, con un comentario que dice de qué equipo es:
 
 ```powershell
-ssh-keygen -t ed25519 -C "anndre@ultra-t"
+ssh-keygen -t ed25519 -C "anndre@laptop"
 Get-Service ssh-agent | Set-Service -StartupType Automatic
 Start-Service ssh-agent
 ssh-add $env:USERPROFILE\.ssh\id_ed25519
