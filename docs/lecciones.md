@@ -26,6 +26,14 @@
 | `C:\vgt.exe`: *The file or directory is corrupted and unreadable* | `Invoke-WebRequest` dejó la descarga incompleta | Comprobar el tamaño con `(Get-Item archivo).Length` y bajarlo de nuevo con el navegador |
 | La guía de pasos usaba `windowsserver.empresa.local` | El equipo se llama `windowserver` (una sola "s") | Mirar el nombre real con `hostname` o el registro SRV en vez de escribirlo de memoria |
 | No se puede pegar en la consola noVNC de la VM Windows | Falta el agente de portapapeles en el invitado | Display → Clipboard: VNC + `virtio-win-guest-tools`, y apagar/encender la VM desde Proxmox |
+| La VM de Wazuh perdía conexiones (timeouts con GitHub, una sesión SSH cortada) | Un celular tenía la misma IP: el DHCP del router repartía toda la red (`.2–.254`) | Rango del DHCP en `.100–.199` y las IPs fijas fuera de él. Antes de fijar una IP, hacer `ping` con el equipo apagado |
+| `ssh-import-id gh:usuario` da `urlopen error timed out` | La VM tenía la IP duplicada (fila anterior) | Copiar la llave desde la PC por SSH y revisar la red |
+| El instalador de Ubuntu dejó `/` con 24 GB en un disco de 50 | Con LVM, la instalación guiada solo asigna la mitad del grupo de volúmenes | En *Storage configuration*, ampliar `ubuntu-lv` al máximo (o borrarlo y crearlo de nuevo con todo el espacio) |
+| Se iba a usar Ubuntu 25.04 para Wazuh | Las versiones no LTS tienen 9 meses de soporte (la 25.04 terminó en enero de 2026) y Wazuh solo soporta LTS | En servidores, solo versiones LTS |
+| La llave SSH de la laptop no se podía usar | Passphrase olvidada: no se puede recuperar | Llave nueva por equipo (`-C "usuario@equipo"`), passphrase en el gestor de contraseñas y `ssh-agent` |
+| Contraseña "incorrecta" en la consola noVNC desde el celular | El teclado del celular pone mayúscula y autocorrige | Entrar por SSH con una app (Termius) |
+| El dashboard de Wazuh da `ERR_CONNECTION_REFUSED` | Se abrió con `http://` (puerto 80); el dashboard solo escucha en el 443 | Escribir `https://` |
+| `NET START Wazuh` falla justo después de instalar el agente | `msiexec` vuelve enseguida y sigue instalando en segundo plano | Esperar un minuto y repetir (o instalar con `Start-Process msiexec -Wait`) |
 
 ## Login de Proxmox: "authentication failed" con el usuario nuevo
 
