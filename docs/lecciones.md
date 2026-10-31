@@ -33,6 +33,7 @@
 | La llave SSH de la laptop no se podía usar | Passphrase olvidada: no se puede recuperar | Llave nueva por equipo (`-C "usuario@equipo"`), passphrase en el gestor de contraseñas y `ssh-agent` |
 | Contraseña "incorrecta" en la consola noVNC desde el celular | El teclado del celular pone mayúscula y autocorrige | Entrar por SSH con una app (Termius) |
 | El dashboard de Wazuh da `ERR_CONNECTION_REFUSED` | Se abrió con `http://` (puerto 80); el dashboard solo escucha en el 443 | Escribir `https://` |
+| El agente de Wazuh queda "unconfigured" al instalarlo en Proxmox con `dpkg -i` | Falta `lsb-release`, que Proxmox no trae (y tampoco `sudo`) | `WAZUH_MANAGER=… WAZUH_AGENT_NAME=… apt install -f -y` instala la dependencia y termina la configuración con los datos correctos |
 | `NET START Wazuh` falla justo después de instalar el agente | `msiexec` vuelve enseguida y sigue instalando en segundo plano | Esperar un minuto y repetir (o instalar con `Start-Process msiexec -Wait`) |
 
 ## Login de Proxmox: "authentication failed" con el usuario nuevo

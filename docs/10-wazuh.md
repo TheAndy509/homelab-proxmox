@@ -152,11 +152,43 @@ El agente es de la misma versión que el servidor (4.14.9). La regla de Wazuh es
 
 **Línea base**, sin ataques, en las primeras 24 horas: 623 alertas de nivel medio (7–11) y 1 321 de nivel bajo (0–6), 0 altas y 0 críticas. Gran parte viene de **Configuration Assessment** (revisión del servidor contra una guía CIS) y de eventos normales de Windows. Sirve de referencia para distinguir, en las simulaciones, lo que genera cada técnica.
 
+## 7. Agente en el host Proxmox (`pve-host`)
+
+**Endpoints → Deploy new agent** → Linux DEB amd64, server `192.168.1.54`, nombre `pve-host`. El comando se ejecuta en **server → Shell**, que ya es `root`. Proxmox no trae `sudo`, así que hay que quitarlo del comando que genera el dashboard:
+
+```sh
+wget https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.14.9-1_amd64.deb
+WAZUH_MANAGER='192.168.1.54' WAZUH_AGENT_NAME='pve-host' dpkg -i ./wazuh-agent_4.14.9-1_amd64.deb
+```
+
+`dpkg` dejó el paquete sin configurar: **falta `lsb-release`**, que Proxmox no trae. `apt install -f` instala la dependencia y termina la configuración; se le pasan otra vez las variables para que la tome con la IP y el nombre correctos:
+
+```sh
+WAZUH_MANAGER='192.168.1.54' WAZUH_AGENT_NAME='pve-host' apt install -f -y
+grep -nE "<address>|<agent_name>" /var/ossec/etc/ossec.conf
+systemctl daemon-reload
+systemctl enable --now wazuh-agent
+```
+
+Proxmox 9 guarda los logs en el *journal* de systemd, no en `/var/log/auth.log`. Para que el agente vea los inicios de sesión falta instalar `rsyslog` y añadir los logs propios de Proxmox (pendiente):
+
+```xml
+<localfile>
+  <location>/var/log/pveproxy/access.log</location>
+  <log_format>syslog</log_format>
+</localfile>
+<localfile>
+  <location>/var/log/fail2ban.log</location>
+  <log_format>syslog</log_format>
+</localfile>
+```
+
 ## Prueba
 
 - Dashboard en `https://192.168.1.54` con `admin` ✅
 - `wazuh-manager`, `wazuh-indexer` y `wazuh-dashboard` activos ✅
 - **Agents summary: Active (1)**, `winserver-dc` ✅
+- `pve-host` activo en **Endpoints** (2026-10-31) ✅
 
 ## Pendiente
 
@@ -183,4 +215,5 @@ El agente es de la misma versión que el servidor (4.14.9). La regla de Wazuh es
 - Llaves SSH de la PC de casa y del celular, y desactivar la contraseña en el SSH de la VM.
 - Retención de índices (por ejemplo, 30 días) para que el disco no crezca sin límite.
 - Comprobar si el router deja pasar conexiones IPv6 entrantes hacia la VM.
-- Más adelante: agentes en el host, el CT 100 y el CT 101, y el syslog del router hacia Wazuh.
+- En `pve-host`: instalar `rsyslog` y añadir los logs de `pveproxy` y fail2ban. Si los logins fallidos de la web llegan pero no generan alerta, escribir una regla propia.
+- Agentes en el CT 100 y el CT 101 (`pct enter`), y el syslog del router hacia Wazuh.

@@ -42,7 +42,7 @@ ThinkCentre (Proxmox VE 9.2)
 | 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | ✅ |
 | 8 | [Endurecimiento del host (SSH con llave, 2FA, fail2ban, SMART y avisos, parches automáticos; firewall en curso)](docs/08-endurecimiento-host.md) | 🔄 |
 | 9 | [Laboratorio: Windows Server con Active Directory](docs/09-laboratorio-windows-server.md) (Kali pendiente) | 🔄 |
-| 10 | [SIEM con Wazuh (VM 104)](docs/10-wazuh.md): servidor instalado, primer agente en el Windows Server | 🔄 |
+| 10 | [SIEM con Wazuh (VM 104)](docs/10-wazuh.md): servidor instalado, agentes en el Windows Server y el host | 🔄 |
 
 Errores y lo aprendido de ellos: [lecciones.md](docs/lecciones.md).
 
@@ -74,7 +74,8 @@ En orden de prioridad.
 - [ ] Sysmon + grupo `windows` en Wazuh; cliente Windows 10/11 y Kali.
 - [ ] Red aislada `vmbr1` y cuentas limitadas para el grupo del parcial.
 - [ ] Llaves SSH de la PC de casa y del celular; desactivar la contraseña en el SSH de la VM.
-- [ ] Agentes en el host y los CTs.
+- [x] Agente en el host Proxmox (`pve-host`, 2026-10-31).
+- [ ] `rsyslog` y logs de Proxmox en `pve-host`; agentes en los CTs.
 
 **Almacenamiento**
 - [ ] El pool `local-lvm` está sobreasignado: vigilar el `Data%` de `lvs` (< 80 %).
