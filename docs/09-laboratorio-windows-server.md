@@ -95,6 +95,10 @@ Para pegar comandos en la consola noVNC:
 - RDP desde la laptop con un usuario del dominio ✅
 - Pegar en la consola noVNC ✅
 
+## Agente de Wazuh
+
+El 2026-10-30 se instaló el agente de Wazuh como `winserver-dc` (detalle en la [fase 10](10-wazuh.md#6-primer-agente-windows-server-winserver-dc)). Ese día la licencia Evaluation tenía **121 días** restantes.
+
 ## Pendiente
 
 - RDP desde la PC con `xfreerdp3` da `ERRCONNECT_LOGON_FAILURE` aunque la contraseña es correcta (desde la laptop entra). Revisar el evento **4625** del servidor para ver el motivo.

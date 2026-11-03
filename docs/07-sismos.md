@@ -23,7 +23,7 @@ pct start 101
 | Ajuste | Por qué |
 |---|---|
 | Debian 13 | Es la base de Proxmox 9 y trae Python 3.13 |
-| 512 MB de RAM | El script dura menos de un segundo cada minuto; el servidor solo tiene 4 GB |
+| 512 MB de RAM | El script dura menos de un segundo cada minuto; el servidor tenía entonces 4 GB |
 | Sin privilegios | Si alguien rompe el contenedor, no es root en el host |
 | IP fija `.51` | Junto a Nextcloud (`.50`); se comprobó antes con `ping` que estaba libre |
 | Solo llave SSH | Se creó sin contraseña de root; se entra con la llave de la PC o con `pct enter 101` |
