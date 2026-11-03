@@ -81,7 +81,8 @@ En orden de prioridad.
 
 **Almacenamiento**
 - [ ] El pool `local-lvm` está sobreasignado: vigilar el `Data%` de `lvs` (< 80 %).
-- [ ] Borrar el snapshot `importada` de la VM 103 (retiene ~20 GiB del SSD).
+- [x] Pool del SSD al 90.72 % → 68.28 %: borrados el snapshot `importada` de la VM 103 y los snapshots `Ubuntu_Base` (con RAM) y `wazuh_instalado` de la VM 104; `winserver.vdi` borrado del HDD (2026-11-03).
+- [ ] Decidir qué hacer con el CT 102 (minecraft).
 
 **Laboratorio (VM 103)**
 - [x] Licencia Evaluation revisada: 121 días restantes el 2026-10-30 (vence a fines de febrero de 2027).
