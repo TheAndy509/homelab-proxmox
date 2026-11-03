@@ -183,12 +183,78 @@ Proxmox 9 guarda los logs en el *journal* de systemd, no en `/var/log/auth.log`.
 </localfile>
 ```
 
+## 8. Regla propia: baneos de fail2ban
+
+Los logins fallidos de la web de Proxmox ya generaban alertas propias de Wazuh (regla **87201**, y **87203** para los logins correctos). Pero cuando fail2ban baneaba una IP no aparecía nada: Wazuh solo guarda lo que genera alerta.
+
+**Investigación** con `wazuh-logtest` en la VM 104, pegando la línea real del baneo:
+
+```
+2026-11-01 18:35:55,010 fail2ban.actions        [1032]: NOTICE  [proxmox] Ban 192.168.1.185
+```
+
+→ `No decoder matched`. El evento llegaba, pero ningún decoder de Wazuh entiende el formato de fail2ban.
+
+**Decoder** (`/var/ossec/etc/decoders/local_decoder.xml`). Reconoce la línea por `] Ban ` / `] Unban `: al separar la fecha, Wazuh no deja `fail2ban.actions` en la parte del mensaje que revisan los decoders.
+
+```xml
+<decoder name="fail2ban-custom">
+  <prematch>] Ban |] Unban </prematch>
+</decoder>
+
+<decoder name="fail2ban-custom-action">
+  <parent>fail2ban-custom</parent>
+  <regex>[(\w+)]\s+(\w+)\s+(\S+)</regex>
+  <order>jail,action,srcip</order>
+</decoder>
+```
+
+**Reglas** (`/var/ossec/etc/rules/local_rules.xml`; los IDs desde 100000 son para reglas propias):
+
+```xml
+<group name="fail2ban,proxmox,">
+  <rule id="100110" level="8">
+    <decoded_as>fail2ban-custom</decoded_as>
+    <action>Ban</action>
+    <description>fail2ban bloqueó la IP $(srcip) en el jail $(jail)</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+
+  <rule id="100111" level="3">
+    <decoded_as>fail2ban-custom</decoded_as>
+    <action>Unban</action>
+    <description>fail2ban desbloqueó la IP $(srcip) en el jail $(jail)</description>
+  </rule>
+</group>
+```
+
+Procedimiento seguro para aplicar cambios en decoders y reglas:
+
+```sh
+sudo /var/ossec/bin/wazuh-analysisd -t      # revisa la configuración sin reiniciar
+sudo systemctl restart wazuh-manager        # solo si no hay ERROR ni CRITICAL
+sudo /var/ossec/bin/wazuh-logtest           # pegar la línea de log y revisar las fases 2 y 3
+```
+
+Prueba con una IP de documentación (`192.0.2.10`, reservada para ejemplos), en la Shell de Proxmox:
+
+```sh
+fail2ban-client set proxmox banip 192.0.2.10
+fail2ban-client set proxmox unbanip 192.0.2.10
+```
+
+`wazuh-logtest` → decoder `fail2ban-custom` (`action: Ban`, `jail: proxmox`, `srcip`), regla **100110** nivel 8, MITRE **T1110 Brute Force** (táctica *Credential Access*).
+
 ## Prueba
 
 - Dashboard en `https://192.168.1.54` con `admin` ✅
 - `wazuh-manager`, `wazuh-indexer` y `wazuh-dashboard` activos ✅
 - **Agents summary: Active (1)**, `winserver-dc` ✅
 - `pve-host` activo en **Endpoints** (2026-10-31) ✅
+- Login fallido en la web de Proxmox → alerta **87201**; login correcto → **87203** ✅
+- `banip` → alerta **100110** "fail2ban bloqueó la IP 192.0.2.10 en el jail proxmox"; `unbanip` → **100111** (2026-11-03) ✅
 
 ## Pendiente
 

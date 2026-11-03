@@ -75,7 +75,9 @@ En orden de prioridad.
 - [ ] Red aislada `vmbr1` y cuentas limitadas para el grupo del parcial.
 - [ ] Llaves SSH de la PC de casa y del celular; desactivar la contraseña en el SSH de la VM.
 - [x] Agente en el host Proxmox (`pve-host`, 2026-10-31).
-- [ ] `rsyslog` y logs de Proxmox en `pve-host`; agentes en los CTs.
+- [x] `rsyslog` y logs de Proxmox en `pve-host`; regla propia para los baneos de fail2ban (2026-11-03, [fase 10](docs/10-wazuh.md#8-regla-propia-baneos-de-fail2ban)).
+- [ ] Eventos duplicados en `pve-host` (revisar si el agente lee el journal y `/var/log/syslog` a la vez).
+- [ ] Agentes en los CTs.
 
 **Almacenamiento**
 - [ ] El pool `local-lvm` está sobreasignado: vigilar el `Data%` de `lvs` (< 80 %).

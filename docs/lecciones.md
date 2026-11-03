@@ -34,6 +34,12 @@
 | Contraseña "incorrecta" en la consola noVNC desde el celular | El teclado del celular pone mayúscula y autocorrige | Entrar por SSH con una app (Termius) |
 | El dashboard de Wazuh da `ERR_CONNECTION_REFUSED` | Se abrió con `http://` (puerto 80); el dashboard solo escucha en el 443 | Escribir `https://` |
 | El agente de Wazuh queda "unconfigured" al instalarlo en Proxmox con `dpkg -i` | Falta `lsb-release`, que Proxmox no trae (y tampoco `sudo`) | `WAZUH_MANAGER=… WAZUH_AGENT_NAME=… apt install -f -y` instala la dependencia y termina la configuración con los datos correctos |
+| Los baneos de fail2ban llegaban a Wazuh pero no generaban alerta | Ningún decoder de Wazuh reconoce el log de fail2ban (`wazuh-logtest`: *No decoder matched*) | Decoder y reglas propios (100110 y 100111), asociados a MITRE T1110 |
+| El decoder propio no reconocía la línea aunque el texto estaba en el log | Al separar la fecha, `fail2ban.actions` no queda en la parte del mensaje que revisan los decoders | Reconocer la línea por lo que siempre está en el mensaje (`] Ban ` / `] Unban `) |
+| `wazuh-manager` no arranca tras editar un decoder | `offset="after_prematch"` no es válido en un decoder hijo sin prematch propio | Usar `after_parent` y revisar siempre con `wazuh-analysisd -t` antes de reiniciar |
+| `wazuh-logtest` no reflejaba los cambios en decoders y reglas | Usa lo que el manager cargó al arrancar | Reiniciar `wazuh-manager` antes de probar |
+| Aviso `Rule ID '100110' is duplicated` | La regla se agregó dos veces (con `nano` y con `tee`) | Contar con `grep -c` antes de agregar un bloque |
+| `banip` no generó la alerta de baneo | La IP seguía baneada: fail2ban escribe `already banned`, no un `Ban` nuevo | Desbanear primero o usar otra IP de prueba |
 | `NET START Wazuh` falla justo después de instalar el agente | `msiexec` vuelve enseguida y sigue instalando en segundo plano | Esperar un minuto y repetir (o instalar con `Start-Process msiexec -Wait`) |
 
 ## Login de Proxmox: "authentication failed" con el usuario nuevo
