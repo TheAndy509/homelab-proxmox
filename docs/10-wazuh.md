@@ -247,6 +247,76 @@ fail2ban-client set proxmox unbanip 192.0.2.10
 
 `wazuh-logtest` → decoder `fail2ban-custom` (`action: Ban`, `jail: proxmox`, `srcip`), regla **100110** nivel 8, MITRE **T1110 Brute Force** (táctica *Credential Access*).
 
+## 9. Sysmon en el Windows Server y ajuste de falsos positivos
+
+**Grupo `windows`** en Wazuh, con `winserver-dc` dentro. Su `agent.conf` hace que los agentes Windows lean los canales de Sysmon y PowerShell:
+
+```xml
+<agent_config>
+  <localfile>
+    <location>Microsoft-Windows-Sysmon/Operational</location>
+    <log_format>eventchannel</log_format>
+  </localfile>
+  <localfile>
+    <location>Microsoft-Windows-PowerShell/Operational</location>
+    <log_format>eventchannel</log_format>
+  </localfile>
+</agent_config>
+```
+
+**Sysmon v15.22** con la configuración indicada por el profesor ([SwiftOnSecurity/sysmon-config](https://github.com/SwiftOnSecurity/sysmon-config), `sysmonconfig-export.xml`), en PowerShell como administrador:
+
+```powershell
+New-Item -ItemType Directory C:\Tools\Sysmon -Force
+Invoke-WebRequest https://download.sysinternals.com/files/Sysmon.zip -OutFile C:\Tools\Sysmon\Sysmon.zip
+Expand-Archive C:\Tools\Sysmon\Sysmon.zip C:\Tools\Sysmon -Force
+Invoke-WebRequest https://raw.githubusercontent.com/SwiftOnSecurity/sysmon-config/master/sysmonconfig-export.xml -OutFile C:\Tools\Sysmon\sysmonconfig-export.xml
+cd C:\Tools\Sysmon
+.\Sysmon64.exe -accepteula -i sysmonconfig-export.xml
+```
+
+Qué registra esa configuración, y qué no (importante para interpretar los escenarios del parcial):
+
+| Evento de Sysmon | ¿Lo registra? |
+|---|---|
+| 1 Creación de procesos | Sí, casi todos |
+| 13 Registro (claves *Run*, etc.) | Sí, claves seleccionadas |
+| 11 Creación de archivos | Solo rutas seleccionadas (`System32\Tasks`, `.dmp`, …) |
+| 22 Consultas DNS | Sí, casi todas |
+| 8 CreateRemoteThread | Sí |
+| 3 Conexiones de red | Solo programas de una lista |
+| **10 Acceso a procesos** | **No** (un volcado de LSASS no genera evento 10) |
+| 7 Carga de DLLs | No |
+
+**Falsos positivos de la línea base.** En cuanto el agente empezó a leer Sysmon aparecieron 35 alertas en pocos segundos, varias de nivel 9 (**92201**), sin que nadie hiciera nada. Las alertas mostraron que era la **revisión de configuración (SCA) del propio agente**:
+
+- **92066** (`SecEdit.exe` lanzado por PowerShell de `SysWOW64`): `currentDirectory` = `C:\Program Files (x86)\ossec-agent\`, usuario `SYSTEM`, y la línea de comando del padre es una comprobación CIS (`secedit /export … LSAAnonymousNameLookup`).
+- **92201** (PowerShell crea un `.ps1` en `Windows\Temp`): el archivo es `__PSScriptPolicyTest_*.ps1`, que PowerShell crea solo al arrancar. Su `processGuid` es el mismo que el `parentProcessGuid` de la alerta de SecEdit: el mismo PowerShell del agente.
+
+**Ajuste acotado** en `local_rules.xml` (reglas hijas de nivel 0 que solo aplican si se cumplen todas las condiciones):
+
+```xml
+<group name="local,sysmon,ajuste,">
+  <rule id="100200" level="0">
+    <if_sid>92066, 92031, 92021</if_sid>
+    <field name="win.eventdata.currentDirectory" type="pcre2">(?i)ossec-agent.{0,4}$</field>
+    <field name="win.eventdata.user" type="pcre2">(?i)NT AUTHORITY.{1,4}SYSTEM$</field>
+    <description>Ajuste: comando del SCA del agente de Wazuh (falso positivo)</description>
+  </rule>
+
+  <rule id="100201" level="0">
+    <if_sid>92201</if_sid>
+    <field name="win.eventdata.targetFilename" type="pcre2">(?i)windows.{1,4}temp.{1,4}__PSScriptPolicyTest_\w+\.\w+\.ps1$</field>
+    <field name="win.eventdata.user" type="pcre2">(?i)NT AUTHORITY.{1,4}SYSTEM$</field>
+    <description>Ajuste: archivo __PSScriptPolicyTest de PowerShell (falso positivo)</description>
+  </rule>
+</group>
+```
+
+No se silencia "PowerShell de SysWOW64" en general: un atacante también puede usarlo. Riesgo residual: alguien que ya sea `SYSTEM` podría imitar esas condiciones, pero a ese nivel ya controla el equipo.
+
+**Verificación (2026-11-03):** tras reiniciar el agente, 0 alertas nuevas 92066/92201; `whoami /all` y `net group "Domain Admins" /domain` ejecutados por un usuario siguen generando la **92031** *Discovery activity executed* (MITRE TA0007).
+
 ## Prueba
 
 - Dashboard en `https://192.168.1.54` con `admin` ✅
@@ -254,6 +324,7 @@ fail2ban-client set proxmox unbanip 192.0.2.10
 - **Agents summary: Active (1)**, `winserver-dc` ✅
 - `pve-host` activo en **Endpoints** (2026-10-31) ✅
 - Login fallido en la web de Proxmox → alerta **87201**; login correcto → **87203** ✅
+- Sysmon en `winserver-dc` → eventos en Wazuh por el canal `Microsoft-Windows-Sysmon/Operational`; ajuste de falsos positivos del SCA verificado (2026-11-03) ✅
 - `banip` → alerta **100110** "fail2ban bloqueó la IP 192.0.2.10 en el jail proxmox"; `unbanip` → **100111** (2026-11-03) ✅
 
 ## Pendiente
