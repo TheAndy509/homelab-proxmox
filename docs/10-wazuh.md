@@ -9,7 +9,7 @@ Objetivo: un servidor **Wazuh** (SIEM + XDR) en su propia VM, para el Parcial #2
 | IP / puerta de enlace / DNS | `192.168.1.54/24` / `192.168.1.1` / `192.168.1.1` |
 | Wazuh | 4.14.9, todo en uno |
 | Dashboard | `https://192.168.1.54` |
-| Snapshots | `ubuntu-base` (Ubuntu actualizado, antes de Wazuh) |
+| Snapshots | `Ubuntu_Base` (Ubuntu actualizado, 29 oct) · `wazuh_instalado` (Wazuh sin configurar, 30 oct) |
 
 ## Por qué así
 
@@ -60,7 +60,7 @@ sudo reboot
 df -h /          # Size ≈ 47G
 ```
 
-Proxmox muestra la IP de la VM en **Summary** (el guest agent funciona). Snapshot **`ubuntu-base`** sin RAM.
+Proxmox muestra la IP de la VM en **Summary** (el guest agent funciona). Snapshot **`Ubuntu_Base`** sin RAM.
 
 ## 3. Incidente: IP duplicada
 
@@ -258,7 +258,7 @@ fail2ban-client set proxmox unbanip 192.0.2.10
 
 ## Pendiente
 
-- Confirmar que el repositorio de Wazuh quedó desactivado y tomar el snapshot `wazuh-instalado`.
+- Snapshot `wazuh_configurado` con los agentes, los grupos, el usuario y la regla de fail2ban (`qm snapshot 104 wazuh_configurado`).
 - Grupo `windows` con su `agent.conf`, para que los agentes Windows recojan Sysmon y PowerShell:
 
   ```xml

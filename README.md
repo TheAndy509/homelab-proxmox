@@ -70,7 +70,7 @@ En orden de prioridad.
 - [ ] Comprobar si el router deja pasar conexiones IPv6 entrantes hacia los equipos de la LAN.
 
 **SIEM (VM 104)** — detalle en la [fase 10](docs/10-wazuh.md#pendiente)
-- [ ] Snapshot `wazuh-instalado` y repositorio de Wazuh desactivado.
+- [x] Snapshot `wazuh_instalado` y repositorio de Wazuh desactivado (verificado 2026-11-03).
 - [ ] Sysmon + grupo `windows` en Wazuh; cliente Windows 10/11 y Kali.
 - [ ] Red aislada `vmbr1` y cuentas limitadas para el grupo del parcial.
 - [ ] Llaves SSH de la PC de casa y del celular; desactivar la contraseña en el SSH de la VM.
