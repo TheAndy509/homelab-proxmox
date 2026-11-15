@@ -43,6 +43,7 @@
 | El pool `local-lvm` llegó al 90.72 % | Tres snapshots de la VM 104 (uno con la RAM guardada, 16.5 GB) retenían los bloques que Wazuh fue sobrescribiendo | Dejar uno o dos snapshots por VM, tomarlos sin RAM y vigilar el `Data%` de `lvs`. Tras borrar dos snapshots y el `importada` de la VM 103 quedó en 68.28 % |
 | 35 alertas (varias de nivel 9) en `winserver-dc` sin actividad de nadie | La revisión de configuración (SCA) del propio agente ejecuta PowerShell y `secedit` como SYSTEM desde su carpeta | Confirmar con `currentDirectory`, `parentCommandLine` y `processGuid`; reglas de nivel 0 acotadas (100200 y 100201) y comprobar que la actividad real sigue alertando |
 | `NET START Wazuh` falla justo después de instalar el agente | `msiexec` vuelve enseguida y sigue instalando en segundo plano | Esperar un minuto y repetir (o instalar con `Start-Process msiexec -Wait`) |
+| Se cae todo (host, CTs y VMs) aunque el equipo sigue encendido; ARP `INCOMPLETE` | La NIC Intel `e1000e` se cuelga (`Detected Hardware Unit Hang`) con TSO/GSO activos | `ethtool -K nic0 tso off gso off gro off` + `post-up` en `/etc/network/interfaces` ([fase 8](08-endurecimiento-host.md)); ante un corte, mirar `journalctl -b -1 -p err` antes de culpar a la RAM |
 
 ## Login de Proxmox: "authentication failed" con el usuario nuevo
 

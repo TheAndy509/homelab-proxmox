@@ -215,3 +215,41 @@ El log confirmó que funcionaba: ya había instalado parches de `openssl`, `syst
 - `occ status` → Nextcloud 35.0.1, sin modo mantenimiento ✅
 - `systemctl --failed` → nada; fail2ban `nextcloud` activo ✅
 - `tail /var/log/cron-apt/log` → sigue corriendo cada noche ✅
+
+## 6. La red del host se colgaba (NIC Intel `e1000e`)
+
+**Síntoma (2026-11-14):** de golpe dejaron de responder la web de Proxmox (`192.168.1.44`) y todos los CTs y VMs. Desde la PC, `ping` fallaba y la tabla ARP marcaba las IPs como `INCOMPLETE`/`FAILED`: el equipo estaba encendido, pero sin red.
+
+**Diagnóstico:** tras reiniciar con el botón de encendido, se revisaron los errores del arranque anterior:
+
+```sh
+journalctl -b -1 -p err | tail -50
+journalctl -b -1 | grep -iE 'out of memory|oom|panic'   # nada: no fue falta de RAM
+```
+
+El log se llenaba de este error cada 2 s:
+
+```
+e1000e 0000:00:1f.6 nic0: Detected Hardware Unit Hang:
+```
+
+Es un fallo conocido de la NIC integrada Intel (driver `e1000e`) con Proxmox: con tráfico alto, la descarga de segmentación (TSO/GSO) por hardware cuelga la tarjeta.
+
+**Solución:** desactivar el *offloading* en `nic0`.
+
+```sh
+ethtool -K nic0 tso off gso off gro off      # en caliente
+```
+
+Para que sobreviva a los reinicios, en `/etc/network/interfaces`, dentro del bloque `iface nic0 inet manual`:
+
+```
+        post-up /sbin/ethtool -K nic0 tso off gso off gro off
+```
+
+y `ifreload -a`.
+
+### Prueba
+
+- `ethtool -k nic0 | grep -E 'tcp-segmentation|generic-(segmentation|receive)'` → las tres en `off` ✅
+- Seguimiento: `journalctl -k | grep -c "Hardware Unit Hang"` debe quedarse en `0`. Si vuelve a aparecer, apagar también `tx rx sg`, o usar un adaptador de red aparte.

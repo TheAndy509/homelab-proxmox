@@ -40,7 +40,7 @@ ThinkCentre (Proxmox VE 9.2)
 | 5 | [Endurecimiento de Nextcloud](docs/05-endurecimiento-nextcloud.md) | ✅ |
 | 6 | [Acceso remoto seguro (Tailscale, sin abrir puertos)](docs/06-tailscale.md) | ✅ |
 | 7 | [Monitor de sismos de Panamá (avisos al celular y Alexa)](docs/07-sismos.md) | ✅ |
-| 8 | [Endurecimiento del host (SSH con llave, 2FA, fail2ban, SMART y avisos, parches automáticos; firewall en curso)](docs/08-endurecimiento-host.md) | 🔄 |
+| 8 | [Endurecimiento del host (SSH con llave, 2FA, fail2ban, SMART y avisos, parches automáticos, fix de la NIC; firewall en curso)](docs/08-endurecimiento-host.md) | 🔄 |
 | 9 | [Laboratorio: Windows Server con Active Directory](docs/09-laboratorio-windows-server.md) (Kali pendiente) | 🔄 |
 | 10 | [SIEM con Wazuh (VM 104)](docs/10-wazuh.md): servidor instalado, agentes en el Windows Server y el host | 🔄 |
 
@@ -63,6 +63,7 @@ En orden de prioridad.
 - [x] Avisos de Proxmox (backups, SMART) por ntfy y correo (2026-10-18).
 - [ ] Enviar el correo desde una cuenta dedicada al servidor, no la personal.
 - [ ] Correo SMTP en Nextcloud.
+- [x] Cuelgues de red por la NIC `e1000e`: offloading desactivado (2026-11-15, [fase 8](docs/08-endurecimiento-host.md)).
 - [ ] Copia externa de los archivos (regla 3-2-1) y disco `backup1` dedicado.
 
 **Red**
